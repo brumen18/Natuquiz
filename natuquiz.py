@@ -1,8 +1,9 @@
+#definimos algunas variables.
 opcion=""
 contador=int(0)
 puntos=int(0)
     #ahora vamos a guardar las respuestas correctas, para imprimirlas en pantalla si el usuario se equivoca.
-respcorrectas=["Y la respuesta correcta era...\n¡La C! El corazón posee cuatro válvulas que le permiten bombear la sangre de manera adecuada en un solo sentido. Estas válvulas son: Mitral, tricúspide, pulmonar y aórtica.", ""]
+respcorrectas=["Y la respuesta correcta era...\n¡La C! El corazón posee cuatro válvulas que le permiten bombear la sangre de manera adecuada en un solo sentido. Estas válvulas son: Mitral, tricúspide, pulmonar y aórtica."]
 respcorrectas.append("Me temo que no.\nEn las flores se encuentran los órganos reproductores de las plantas. De hecho, éstas pueden ser unisexuales o hermafroditas.")
 respcorrectas.append("Respuesta incorrecta: Aunque a ciencia cierta el origen preciso de las aves sigue siendo un misterio, se da por sentado que se encuentra estrechamente relacionado con los reptiles prehistóricos como el Velociraptor, una especie de terópodo.")
 respcorrectas.append("Nop, esos no eran...\nTanto las ballenas como los delfines pertenecen al orden de los cetáceos, lo que significa que poseen placenta y son de sangre caliente, dan a luz en lugar de poner huevos, y producen leche para alimentar a sus crías.\nAdemás, poseen pulmones en lugar de branquias, por lo que respiran aire.")
@@ -64,43 +65,444 @@ def juega():
     preguntas.append("¿Cuánto puede vivir un erizo?")
     preguntas.append("¿La salamandra es un animal de sangre caliente?")
     preguntas.append("¿Qué tiene de especial el ave conocida como pitohuí?")
-    #ahora importamos un math para sacar un número aleatóreo.
+    #ahora importamos un random para sacar un número aleatóreo.
     print("¡OK, empecemos! allá va la primer pregunta.")
     jugar="jugar"
     import random
     pregunta=random.randint(0, len(preguntas)-1)
+    global contador
     while jugar=="jugar":
-        if contador==2:
-            #imprimimos en pantalla la pregunta que consiguió.
+        global puntos
+        global opcion
+        if contador==3:
+            #en caso de que la persona se haya equivocado tres veces, lanzamos un mensaje de alerta ycerramos el juego.
             print("¡Fin del juego! te has equivocado 3 veces.")
             jugar=""
+            contador=0
+            puntos=0
+            opcion="salir"
         else:
             print(preguntas[pregunta])
         #y llamamos a la función respuesta, pasándole la pregunta.
-            respuesta(pregunta)
-            borrarpregunta=preguntas[pregunta]
-            preguntas.remove(borrarpregunta)
-            pregunta=random.randint(0, len(preguntas)-1)
+            pregunta1=preguntas[pregunta]
+            respuesta(pregunta1, pregunta)
+            if len(preguntas)<=1:
+                print("Wow, ¡qué buen trabajo!")
+                print("Felicitaciones, has contestado de forma correcta a todas las preguntas del juego.")
+                print("Tu puntuación ha sido de ",puntos)
+                print("Si lo deseas, puedes sacarle una captura de pantalla ¡y presumir con tus amigos!")
+                jugar=""
+                opcion="salir"
+            else:
+                borrarpregunta=preguntas[pregunta]
+                preguntas.remove(borrarpregunta)
+                global respcorrectas
+                respcorrectas.pop(pregunta)
+                pregunta=random.randint(0, len(preguntas)-1)
 #función respuesta:
-def respuesta(npregunta):
+def respuesta(npregunta, rpregunta):
     global puntos
     global contador
     import random
-    if npregunta==0:
+    global respcorrectas
+    #aquí vamos a ir añadiendo las opciones y cuáles de ellas son válidas.
+    if npregunta=="¿Cuáles de las siguientes opciones corresponden a válvulas del corazón?":
         print("A: Mitral, tricúspide, píloro.")
         print("B: pulmonar, aórtica, Cardias.")
         print("C: Tricúspide, pulmonar, mitral.")
         ropcion=input("Tu respuesta: ")
         if ropcion.upper()=="C":
-            print("¡Sí! felicidades.")
-            print("¡Vamos a la siguiente.")
             puntos=int(puntos+random.randint(0, 1000))
+            print("¡Sí! felicidades. Ahora tienes ",puntos," puntos")
+            print("¡Vamos a la siguiente.")
         else:
             contador=contador+1
             puntos=int(puntos-random.randint(0, 1000))
-            global respcorrectas
-            print(respcorrectas[npregunta])
+            print(respcorrectas[rpregunta])
+            print("Ahora tienes ",puntos," puntos")
+    elif npregunta=="¿Qué parte de una planta representan las flores?":
+        print("A: Órganos reproductores.")
+        print("B: Los frutos antes de su maduración.")
+        print("C: Órganos respiratorios.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="A":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Bien hecho! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            print(respcorrectas[rpregunta])
+            puntos=puntos-random.randint(0, 1000)
+            print("Tu contador ahora es de ",puntos," puntos")
+    elif npregunta=="¿De dónde se cree que provienen las aves?":
+        print("A: De anfibios prehistóricos.")
+        print("B: De dinosaurios terópodos.")
+        print("C: De los peces.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("Excelente! has acertado. Ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            print(respcorrectas[rpregunta])
+            puntos=puntos-random.randint(0, 1000)
+            print("Tu contador ahora es de ",puntos," puntos.")
+    elif npregunta=="¿Cuáles de los siguientes animales marinos son mamíferos?":
+        print("A: El delfín, la manta, el tiburón blanco.")
+        print("B: El tiburón ballena, la foca, el pez león.")
+        print("C: La orca, el delfín, la ballena beluga.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="C":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Felicitaciones! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Ahora tienes ",puntos," puntos.")
+    elif npregunta=="¿Cuáles de los siguientes procesos corresponden al ciclo del agua?":
+        print("A: Condensación, infiltración, hidratación.")
+        print("B: Evaporación, condensación, precipitación.")
+        print("C: Solidificación, disolución, precipitación.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Felicitaciones! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Ahora tienes ",puntos," puntos.")
+    elif npregunta=="Según los médicos, la mujer puede ovular naturalmente una cantidad limitada de veces a lo largo de su vida. ¿Cuál de las siguientes cifras es la que más se aproxima?":
+        print("A: 400 veces.")
+        print("B: 1500 veces.")
+        print("C: 50 veces.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="A":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Buen trabajo! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Ahora tienes ",puntos," puntos.")
+    elif npregunta=="¿Cuál es el número aproximado de neuronas que posee el cerebro humano?":
+        print("A: 5000 millones.")
+        print("B: 13.5 millones.")
+        print("C: 100.000 millones.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="C":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Eso es! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Te quedan ",puntos," puntos.")
+    elif npregunta=="¿La siguiente afirmación es verdadera o falsa? Los bebés nacen con una cantidad de huesos mayor a la que posee una persona adulta.":
+        print("A: Verdadero.")
+        print("B: Falso.")
+        print("C: Depende de la alimentación de la madre durante el embarazo.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="A":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Qué inteligente! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Te quedan ",puntos," puntos.")
+    elif npregunta=="¿En cuál de los siguientes animales encontramos que el macho es quien se encarga de llevar a las crías en su interior durante la gestación?":
+        print("A: La rana punta de flecha.")
+        print("B: El caballito de mar.")
+        print("C: El escarabajo Hércules.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Excelente! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Llevas ",puntos," puntos.")
+    elif npregunta=="¿Qué contienen los cloroplastos de las células vegetales?":
+        print("A: Clorofila.")
+        print("B: Agua.")
+        print("C: Sábila.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Excelente! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Llevas ",puntos," puntos.")
+    elif npregunta=="¿Cuáles de los siguientes dos huesos se hallan en el hombro?":
+        print("A: Frontal y occipital.")
+        print("B: Cúbito y radio.")
+        print("C: Clavícula y omóplato.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="C":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Eso es! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Tu contador es de  ",puntos," puntos.")
+    elif npregunta=="¿Cuál de las siguientes enfermedades afecta el sistema digestivo?":
+        print("A: Sarampión.")
+        print("B: Meningitis.")
+        print("C: Gastritis.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="C":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Eso es! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Tu contador es de  ",puntos," puntos.")
+    elif npregunta=="Los bonobos pertenecen a la familia de los simios. ¿Cómo manejan ellos normalmente un conflicto?":
+        print("A: con una pelea.")
+        print("B: Con sexo.")
+        print("C: Gritando y aullando para intimidar al adversario.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Felicitaciones! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Tu contador ahora es de  ",puntos," puntos.")
+    elif npregunta=="¿Cuáles de los siguientes grupos de animales se encuentran actualmente en peligro de extinción?":
+        print("A: El oso polar, el leopardo de las nieves, el rinoceronte.")
+        print("B: el elefante, el cuerpo espín, la mariposa monarca.")
+        print("C: el oso panda, el gorila de montaña, la serpiente de cascabel.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="A":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Muy bien! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Te quedan ",puntos," puntos.")
+    elif npregunta=="¿Qué es la malacología?":
+        print("A: La ciencia que estudia los hongos.")
+        print("B: La ciencia que estudia los moluscos.")
+        print("C: La ciencia que estudia los ácaros.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Maravilloso! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Te quedan ",puntos," puntos.")
+    elif npregunta=="¿Qué significan las siglas 'ADN'?":
+        print("A: Ácido deoxinucleico.")
+        print("B: Ácido desorribonucleico.")
+        print("C: Ácido desoxirribonucleico.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="C":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Maravilloso! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Actualmente tienes ",puntos," puntos.")
+    elif npregunta=="Los pares craneales son 12 pares de nervios que pasan por orificios del cráneo y van desde el encéfalo hasta diferentes partes del cuerpo, transmitiendo información de los sentidos como el gusto o el olfato.\nAnte esto, ¿Qué par craneal es el nervio óptico?":
+        print("A: El octavo par craneal.")
+        print("B: El segundo par craneal.")
+        print("C: El cuarto par craneal.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Así se hace! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("En total llevas ",puntos," puntos.")
+    elif npregunta=="Responde si la siguiente afirmación es verdadera o falsa: El 'Phrynosoma cornutum' (también conocido como lagarto de cuernos) puede disparar sus espinas en caso de peligro.":
+        print("A: verdadero.")
+        print("B: falso.")
+        print("C: Únicamente los machos de esta especie pueden.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Sigue así! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("En total llevas ",puntos," puntos.")
+    elif npregunta=="¿De qué tipo son todos los organismos del reino Animalia?":
+        print("A: Multicelulares y autótrofos.")
+        print("B: Multicelulares y heterótrofos.")
+        print("C: Unicelulares y heterótrofos.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Fantástico! ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Te quedan ",puntos," puntos.")
+    elif npregunta=="¿Cómo se denomina a un grupo de crías de perro?":
+        print("A: Camada.")
+        print("B: Manada.")
+        print("C: Piara.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="A":
+            puntos=puntos+random.randint(0, 1000)
+            print("Vaya, acertaste. Ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Te quedan ",puntos," puntos.")
+    elif npregunta=="¿Cuál es la especie de medusa más grande del mundo?":
+        print("A: Medusa melena de león.")
+        print("B: Medusa fantasma.")
+        print("C: Medusa de caja.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="A":
+            puntos=puntos+random.randint(0, 1000)
+            print("Creo que me equivoqué contigo, eres más inteligente de lo que suponía.\nAhora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("En fin, ahora te quedan ",puntos," puntos.")
+    elif npregunta=="¿Qué es un cardumen?":
+        print("A: Una especie de planta.")
+        print("B: Un banco de peces.")
+        print("C: Una parte del abdomen de los insectos.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Bien hecho! Ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Llevas ",puntos," puntos.")
+    elif npregunta=="Responde si la siguiente afirmación es verdadera o falsa: la sinecología es la ciencia que estudia las relaciones entre las comunidades biológicas y los ecosistemas de la Tierra.":
+        print("A: Verdadero.")
+        print("B: Falso.")
+        print("C: Solo las que respectan a comunidades del reino animal.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="A":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Correcto! Ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Llevas ",puntos," puntos.")
+    elif npregunta=="¿Por quién fue ideado el sistema de clasificación taxonómica actual?":
+        print("A: Darwin.")
+        print("B: Linneo.")
+        print("C: Pasteur.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Correcto! Ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Ahora tienes ",puntos," puntos.")
+    elif npregunta=="¿Qué orden de mamíferos tiene el mayor número de especies?":
+        print("A: Insectívora.")
+        print("B: Carnívora.")
+        print("C: Rodentia.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="C":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Genial! Ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Ahora tienes ",puntos," puntos.")
+    elif npregunta=="¿Qué bioma o paisaje bioclimático se caracteriza por tener una capa de permafrost?":
+        print("A: Taiga.")
+        print("B: Tundra.")
+        print("C: Sabana.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Genial! Ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Ahora tienes ",puntos," puntos.")
+    elif npregunta=="¿Cuál de los siguientes animales tiene incisivos que continúan creciendo durante toda su vida?":
+        print("A: Morsa.")
+        print("B: Elefante.")
+        print("C: Hámster.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="C":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Perfecto! Ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Tu contador tiene ",puntos," puntos.")
+    elif npregunta=="¿Cuánto puede vivir un erizo?":
+        print("A: Aproximadamente entre 2 y 3 años.")
+        print("B: Aproximadamente entre 4 y 5 años.")
+        print("C: Aproximadamente entre 7 y 8 años.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Perfecto! Ahora tienes ",puntos," puntos.")
+        elif ropcion.upper()=="C":
+            puntos=puntos+random.randint(0, 500)
+            print(respcorrectas[rpregunta])
+            print("Dado que has marcado la opción parcialmente correcta, te tendré piedad y te regalo algunos puntos.\nAhora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Tu contador tiene ",puntos," puntos.")
+    elif npregunta=="¿La salamandra es un animal de sangre caliente?":
+        print("A: si.")
+        print("B: no.")
+        print("C: Depende de la estación del año.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="B":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Increíble! Ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Tu contador tiene ",puntos," puntos.")
+    elif npregunta=="¿Qué tiene de especial el ave conocida como pitohuí?":
+        print("A: Sus picos son capaces de atravesar el acero.")
+        print("B: Sus crías aprenden a volar en apenas unos días.")
+        print("C: Sus plumas tienen una neurotoxina increíblemente dolorosa.")
+        ropcion=input("Tu respuesta: ")
+        if ropcion.upper()=="C":
+            puntos=puntos+random.randint(0, 1000)
+            print("¡Increíble! Ahora tienes ",puntos," puntos.")
+        else:
+            contador=contador+1
+            puntos=puntos-random.randint(0, 1000)
+            print(respcorrectas[rpregunta])
+            print("Tu contador tiene ",puntos," puntos.")
 while opcion.upper()!="SALIR":
+#finalmente aquí metemos el código principal de la aplicacion.
     print("¡BIENVENIDO A NATUQUIZ!")
     print("¿Qué tanto conoces de tu planeta y los seres que lo habitan?")
     print("Si deseas saber cómo jugar, teclea 'ayuda'. De lo contrario, teclea 'jugar' para empezar.")
